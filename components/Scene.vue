@@ -1,168 +1,144 @@
 <template>
-    <div ref="threeScene" class="three-scene" @click="lockPointer" />
+  <div ref="threeScene" class="three-scene" />
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 // Props
 const props = defineProps({
-    flyEnabled: { type: Boolean, default: true },
-    mapPath: { type: String, default: '/3d/map.glb' },
-    cameraTarget: { type: Object, default: () => new THREE.Vector3(0, 1.6, 0) }
+  mapPath: { type: String, default: '/3d/map.glb' },
+  cameraTarget: { type: Object, default: () => new THREE.Vector3(0, 1.6, 0) },
+  cameraPositionStart: { type: Object, default: () => new THREE.Vector3(0, 1.6, 10) },
+  cameraPositionEnd: { type: Object, default: () => new THREE.Vector3(0, 1.6, 2) },
 });
 
-// Refs & State
 const threeScene = ref(null);
-let scene, camera, renderer, controls;
-let move = {
-    forward: false,
-    backward: false,
-    left: false,
-    right: false,
-    up: false,
-    down: false
-};
-const velocity = new THREE.Vector3();
-const direction = new THREE.Vector3();
+let scene, camera, renderer, composer;
 const clock = new THREE.Clock();
-
 let animateId = null;
+let scrollProgress = 0;
 
-function lockPointer() {
-    if (props.flyEnabled && controls) controls.lock();
+// Scroll to camera interpolation
+function updateScrollProgress() {
+  const maxScroll = window.innerHeight * 1.5;
+  scrollProgress = Math.min(window.scrollY / maxScroll, 1);
 }
 
-// Fly controls
-function setupFlyControls() {
-    controls = new PointerLockControls(camera, renderer.domElement);
-    scene.add(controls.getObject());
-
-    const onKeyDown = (e) => {
-        switch (e.code) {
-            case 'KeyW': case 'ArrowUp': move.forward = true; break;
-            case 'KeyS': case 'ArrowDown': move.backward = true; break;
-            case 'KeyA': case 'ArrowLeft': move.left = true; break;
-            case 'KeyD': case 'ArrowRight': move.right = true; break;
-            case 'Space': move.up = true; break;
-            case 'ShiftLeft': move.down = true; break;
-        }
-    };
-
-    const onKeyUp = (e) => {
-        switch (e.code) {
-            case 'KeyW': case 'ArrowUp': move.forward = false; break;
-            case 'KeyS': case 'ArrowDown': move.backward = false; break;
-            case 'KeyA': case 'ArrowLeft': move.left = false; break;
-            case 'KeyD': case 'ArrowRight': move.right = false; break;
-            case 'Space': move.up = false; break;
-            case 'ShiftLeft': move.down = false; break;
-        }
-    };
-
-    document.addEventListener('keydown', onKeyDown);
-    document.addEventListener('keyup', onKeyUp);
-
-    onBeforeUnmount(() => {
-        document.removeEventListener('keydown', onKeyDown);
-        document.removeEventListener('keyup', onKeyUp);
-    });
+// Smooth camera lookAt
+function lerpLookAt(current, target, alpha = 0.1) {
+  const dir = new THREE.Vector3().subVectors(target, current.position).normalize();
+  const currentDir = camera.getWorldDirection(new THREE.Vector3());
+  currentDir.lerp(dir, alpha).normalize();
+  const newTarget = new THREE.Vector3().copy(current.position).add(currentDir);
+  camera.lookAt(newTarget);
 }
 
-// Lerp toward target
-function lerpLookAt(current, target, alpha = 0.05) {
-    const dir = new THREE.Vector3().subVectors(target, current.position).normalize();
-    const currentDir = camera.getWorldDirection(new THREE.Vector3());
-    currentDir.lerp(dir, alpha).normalize();
-    const newTarget = new THREE.Vector3().copy(current.position).add(currentDir);
-    camera.lookAt(newTarget);
-}
-
-// Init Three
 function initThreeJS() {
-    scene = new THREE.Scene();
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x111111); // dark background for cinematic feel
 
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 1.6, 5);
+  // Camera
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.copy(props.cameraPositionStart);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    threeScene.value.appendChild(renderer.domElement);
+  // Renderer
+  renderer = new THREE.WebGLRenderer({antialias: true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  threeScene.value.appendChild(renderer.domElement);
 
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x444444));
+  // Soft lighting
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+  hemiLight.position.set(0, 20, -5);
+  scene.add(hemiLight);
 
-    // Load map
-    const loader = new GLTFLoader();
-    loader.load(
-        props.mapPath,
-        (gltf) => scene.add(gltf.scene),
-        undefined,
-        (err) => console.error('GLB Load Error:', err)
-    );
+  // Load model
+  const loader = new GLTFLoader();
+  loader.load(
+      props.mapPath,
+      (gltf) => {
+        gltf.scene.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+        scene.add(gltf.scene);
+      },
+      undefined,
+      (err) => console.error('GLB Load Error:', err)
+  );
 
-    if (props.flyEnabled) setupFlyControls();
+  // Post-processing
+  const renderPass = new RenderPass(scene, camera);
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.6, 0.4, 0.1);
 
-    window.addEventListener('resize', onResize);
-    animate();
+  composer = new EffectComposer(renderer);
+  composer.addPass(renderPass);
+  composer.addPass(bloomPass);
+
+  window.addEventListener('resize', onResize);
+  window.addEventListener('scroll', updateScrollProgress);
+
+  animate();
 }
 
-// Animate
 function animate() {
-    animateId = requestAnimationFrame(animate);
-    const delta = clock.getDelta();
-    const elapsed = clock.elapsedTime;
+  animateId = requestAnimationFrame(animate);
+  updateScrollProgress();
 
-    if (props.flyEnabled && controls) {
-        velocity.x -= velocity.x * 10.0 * delta;
-        velocity.z -= velocity.z * 10.0 * delta;
-        velocity.y -= velocity.y * 10.0 * delta;
+  // Camera movement
+  camera.position.lerpVectors(
+      props.cameraPositionStart,
+      props.cameraPositionEnd,
+      scrollProgress
+  );
 
-        direction.z = Number(move.forward) - Number(move.backward);
-        direction.x = Number(move.right) - Number(move.left);
-        direction.y = Number(move.down) - Number(move.up);
-        direction.normalize();
+  // Optional breathing effect
+  const elapsed = clock.getElapsedTime();
+  camera.position.y += Math.sin(elapsed * 0.5) * 0.01;
 
-        if (move.forward || move.backward) velocity.z -= direction.z * 400.0 * delta;
-        if (move.left || move.right) velocity.x -= direction.x * 400.0 * delta;
-        if (move.up || move.down) velocity.y -= direction.y * 400.0 * delta;
+  lerpLookAt(camera, props.cameraTarget, 0.1);
 
-        controls.moveRight(-velocity.x * delta);
-        controls.moveForward(-velocity.z * delta);
-        controls.getObject().position.y += velocity.y * delta;
-    } else {
-        // Oscillation (breathing)
-        camera.position.y = 1.6 + Math.sin(elapsed * 0.5) * 0.05;
-        // Smooth look at
-        lerpLookAt(camera, props.cameraTarget, 0.05);
-    }
-
-    renderer.render(scene, camera);
+  // Use composer instead of renderer directly
+  composer.render();
 }
 
 function onResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
 }
 
 onMounted(() => {
-    initThreeJS();
+  initThreeJS();
 });
 
 onBeforeUnmount(() => {
-    cancelAnimationFrame(animateId);
-    window.removeEventListener('resize', onResize);
+  cancelAnimationFrame(animateId);
+  window.removeEventListener('resize', onResize);
+  window.removeEventListener('scroll', updateScrollProgress);
 });
 </script>
 
 <style scoped>
 .three-scene {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    cursor: crosshair;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
 }
 </style>
