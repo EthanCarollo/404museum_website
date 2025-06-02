@@ -16,6 +16,9 @@ const props = defineProps({
   cameraTarget: { type: Object, default: () => new THREE.Vector3(0, 1.6, 0) },
   cameraPositionStart: { type: Object, default: () => new THREE.Vector3(0, 1.6, 10) },
   cameraPositionEnd: { type: Object, default: () => new THREE.Vector3(0, 1.6, 2) },
+  cameraFovStart: { type: Number, default: 75 },
+  cameraFovMiddle: { type: Number, default: 60 }, // ✅ nouvelle valeur intermédiaire
+  cameraFovEnd: { type: Number, default: 45 },
 });
 
 const threeScene = ref(null);
@@ -52,13 +55,22 @@ function initThreeJS() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = 0.5;
   threeScene.value.appendChild(renderer.domElement);
 
   // Soft lighting
-  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.4);
   hemiLight.position.set(0, 20, -5);
   scene.add(hemiLight);
+
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+  dirLight.position.set(5, 10, -27.5);
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.width = 1024;
+  dirLight.shadow.mapSize.height = 1024;
+  dirLight.shadow.camera.near = 0.5;
+  dirLight.shadow.camera.far = 50;
+  scene.add(dirLight);
 
   // Load model
   const loader = new GLTFLoader();
@@ -94,6 +106,21 @@ function initThreeJS() {
 function animate() {
   animateId = requestAnimationFrame(animate);
   updateScrollProgress();
+
+  let newFov;
+  if (scrollProgress < 0.5) {
+    const t = scrollProgress / 0.5; // 0 → 1
+    newFov = THREE.MathUtils.lerp(props.cameraFovStart, props.cameraFovMiddle, t);
+  } else {
+    const t = (scrollProgress - 0.5) / 0.5; // 0 → 1
+    newFov = THREE.MathUtils.lerp(props.cameraFovMiddle, props.cameraFovEnd, t);
+  }
+
+  if (camera.fov !== newFov) {
+    camera.fov = newFov;
+    camera.updateProjectionMatrix();
+  }
+
 
   // Camera movement
   camera.position.lerpVectors(

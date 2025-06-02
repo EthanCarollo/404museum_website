@@ -18,5 +18,6 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@tresjs/nuxt',
     'nuxt-lucide-icons'
-  ]
+  ],
+  plugins: ['~/plugins/lenis.client.ts']
 })
