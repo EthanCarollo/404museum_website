@@ -1,3 +1,77 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --vh: 1vh;
+}
+
+@layer utilities {
+    .h-screen-safe {
+        height: 100vh; /* Fallback */
+        height: calc(var(--vh, 1vh) * 100);
+    }
+
+    .min-h-screen-safe {
+        min-height: 100vh; /* Fallback */
+        min-height: calc(var(--vh, 1vh) * 100);
+    }
+}
+
+html, body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+@supports (-webkit-touch-callout: none) {
+    .h-screen-safe {
+        height: -webkit-fill-available;
+        min-height: 100vh;
+    }
+
+    .min-h-screen-safe {
+        min-height: -webkit-fill-available;
+    }
+}
+
+@media screen and (max-height: 500px) {
+    .h-screen-safe {
+        min-height: 100vh;
+        height: 100vh;
+    }
+}
+
+canvas {
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@media screen and (max-width: 768px) {
+    .h-screen-safe {
+        height: 100dvh;
+        height: calc(var(--vh, 1vh) * 100);
+    }
+}
+
+@supports (height: 100dvh) {
+    .h-screen-safe {
+        height: 100dvh;
+    }
+}
+
+@supports (height: 100svh) {
+    .h-screen-safe {
+        height: 100svh;
+    }
+}
+
+@supports (height: 100lvh) {
+    .h-screen-safe {
+        height: 100lvh;
+    }
+}
