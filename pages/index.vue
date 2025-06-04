@@ -27,7 +27,6 @@
     <ScrollHint />
 
     <!-- Marge de défilement avant l'apparition -->
-    <div class="h-[170vh]"></div>
 
     <!-- Content dans le flux, animé -->
     <section

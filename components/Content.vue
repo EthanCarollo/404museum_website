@@ -1,9 +1,12 @@
 <template>
+  <div class="h-[180vh]"></div>
+  <div
+      class="fixed top-0 left-0 w-full h-full z-[-1] transition-colors duration-700 "
+      :class="isBlackBgActive ? 'bg-black' : 'bg-transparent'"
+  ></div>
+  <div class="h-[130vh]"></div>
+
   <div class="relative bg-black text-white">
-    <!-- Fond animé subtil -->
-    <div class="fixed inset-0 z-0">
-      <div class="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-black to-cyan-900/10"></div>
-    </div>
 
     <!-- Section Titre -->
     <section class="relative z-10 py-20 text-center">
@@ -110,6 +113,25 @@
     </footer>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+
+const isBlackBgActive = ref(false)
+
+const handleScroll = () => {
+  isBlackBgActive.value = window.scrollY > window.innerHeight * 1.8 // 180vh
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
+</script>
+
 
 <style scoped>
 /* Animation du gradient */
