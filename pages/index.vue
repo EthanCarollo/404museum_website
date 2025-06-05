@@ -1,7 +1,6 @@
 <template>
   <div class="relative">
-    <!-- Scène 3D épinglée pendant la première partie -->
-    <div class="fixed top-0 h-screen-safe">
+    <div class="fixed top-0 h-[100lvh] overflow-y-hidden">
       <Scene
           mapPath="/3d/mainmenu.glb"
           :camera-position-start="new THREE.Vector3(0, 1.4, -0.5)"
@@ -24,12 +23,8 @@
       />
     </div>
 
-    <!-- Indicateur de scroll -->
     <ScrollHint />
 
-    <!-- Marge de défilement avant l'apparition -->
-
-    <!-- Content dans le flux, animé -->
     <section
         class="transition-all duration-700"
         :class="showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'"
