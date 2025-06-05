@@ -30,7 +30,8 @@ const isMobile = computed(() => {
   return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 });
 
-// Props with mobile-optimized defaults
+const emit = defineEmits(['loading-progress']);
+
 const props = defineProps({
   mapPath: {type: String, default: '/3d/map.glb'},
   cameraTarget: {type: Object, default: () => new THREE.Vector3(0, 1.6, 0)},
@@ -70,10 +71,8 @@ let shiningRect = null;
 const clock = new THREE.Clock();
 let animateId = null;
 
-// Simplified lighting
 let dirLight, screenLight;
 
-// Enhanced scroll handling with easing
 let targetScrollProgress = 0;
 let currentScrollProgress = 0;
 
@@ -81,7 +80,6 @@ function updateScrollProgress() {
   const maxScroll = window.innerHeight * 1.5;
   targetScrollProgress = Math.min(window.scrollY / maxScroll, 1);
 
-  // Smooth easing (reduced for mobile)
   const ease = isMobile.value ? 0.12 : 0.08;
   currentScrollProgress += (targetScrollProgress - currentScrollProgress) * ease;
   scrollProgress.value = currentScrollProgress;
@@ -197,7 +195,12 @@ function initThreeJS() {
         });
         scene.add(gltf.scene);
       },
-      undefined,
+      (xhr) => {
+        if (xhr.lengthComputable) {
+          const progress = xhr.loaded / xhr.total;
+          emit('loading-progress', progress);
+        }
+      },
       (err) => console.error('GLB Load Error:', err)
   );
 

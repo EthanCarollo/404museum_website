@@ -19,6 +19,7 @@
           :rect-width="0.23"
           :rect-height="0.18"
           :max-scale="2"
+          @loading-progress="loadingProgress"
           class="w-full h-full canvas-container"
       />
     </div>
@@ -66,6 +67,10 @@ const handleScroll = () => {
 const handleResize = () => {
   updateViewportHeight();
 };
+
+const loadingProgress = (progress) => {
+  console.warn(progress)
+}
 
 onMounted(() => {
   // Initialiser la hauteur du viewport
