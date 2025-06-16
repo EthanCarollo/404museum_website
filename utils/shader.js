@@ -115,17 +115,17 @@ export var fragmentShader = /* glsl */`
                                       dot(p2,x2), dot(p3,x3) ) );
         }
 
+      const vec3 colorA = vec3(0.7);
+      const vec3 colorB = vec3(1.000);
+
       void main() {
         vec2 multipliedUv = vUv + (uTime * 0.2);
         vec3 noisePostion = vec3(0., multipliedUv.y * 20., uTime*10.0);
         vec3 noiseColor = vec3(snoise(noisePostion));
 
-        vec3 colorA = vec3(0.7);
-        vec3 colorB = vec3(1.000);
         noiseColor = mix(colorA, colorB, noiseColor);
-
         vec4 textureColor = texture2D(uTexture, vec2(vUv.x, 1.0 - vUv.y));
-
+        
         vec3 color = textureColor.rgb * noiseColor;
 
         gl_FragColor = vec4(color, 1.0);

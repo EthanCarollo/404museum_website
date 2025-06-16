@@ -7,7 +7,7 @@
                 :camera-position-end="new THREE.Vector3(0, 1.3, 0.3)"
                 :camera-target="new THREE.Vector3(0.3, 1.1, 1)"
                 :cameraFovStart="40"
-                :cameraFovMiddle="120"
+                :cameraFovMiddle="80"
                 :cameraFovEnd="70"
                 :rect-position="new THREE.Vector3(0.002, 1.32, 0.5)"
                 :rect-color="0xffffff"
@@ -26,6 +26,7 @@
     <div class="z-10">
         <HeaderMuseum />
     </div>
+    <div class="h-[2000vh]"></div>
 </template>
 
 <script setup>
