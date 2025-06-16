@@ -25,6 +25,13 @@ body {
 }
 
 @font-face {
+    font-family: 'droidsansbold';
+    src: url('./droidsansbold.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'depixel';
     src: url('./depixel.ttf');
     font-weight: normal;
