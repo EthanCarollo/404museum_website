@@ -1,12 +1,8 @@
 export var vertexShader = /* glsl */`
       varying vec2 vUv;
-      varying vec3 vPosition;
-      varying vec3 vNormal;
 
       void main() {
         vUv = uv;
-        vPosition = position;
-        vNormal = normalize(normalMatrix * normal);
 
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
@@ -18,11 +14,9 @@ export var fragmentShader = /* glsl */`
       uniform float uScrollProgress;
       uniform vec3 uColor;
       uniform float uIntensity;
+      
       uniform sampler2D uTexture;
-
       varying vec2 vUv;
-      varying vec3 vPosition;
-      varying vec3 vNormal;
 
       const vec3 colorA = vec3(0.7);
       const vec3 colorB = vec3(1.000);

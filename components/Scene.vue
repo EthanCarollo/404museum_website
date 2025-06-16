@@ -36,6 +36,7 @@ const emit = defineEmits(['loading-progress']);
 const props = defineProps({
     mapPath: {type: String, default: '/3d/map.glb'},
     cameraTarget: {type: Object, default: () => new THREE.Vector3(0, 1.6, 0)},
+    cameraTargetEnd: {type: Object, default: () => new THREE.Vector3(0, 1.6, -2)}, // NEW: End target for camera
     cameraPositionStart: {type: Object, default: () => new THREE.Vector3(0, 1.6, 10)},
     cameraPositionEnd: {type: Object, default: () => new THREE.Vector3(0, 1.6, 2)},
     cameraFovStart: {type: Number, default: 75},
@@ -82,8 +83,10 @@ let targetObject = null; // Objet trouvé avec traverse
 let targetScrollProgress = 0;
 let currentScrollProgress = 0;
 
-const textureLoader = new THREE.TextureLoader();
+// NEW: Current camera target for smooth interpolation
+let currentCameraTarget = new THREE.Vector3();
 
+const textureLoader = new THREE.TextureLoader();
 
 // Template de shader personnalisable
 const createShaderTemplate = () => {
@@ -187,6 +190,9 @@ function initThreeJS() {
     // Mobile-optimized camera
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.copy(props.cameraPositionStart);
+
+    // NEW: Initialize current camera target
+    currentCameraTarget.copy(props.cameraTarget);
 
     // Mobile-optimized renderer
     renderer = new THREE.WebGLRenderer({
@@ -314,7 +320,6 @@ function animate() {
 
     // Mise à jour des uniforms du shader
     if (shaderMaterial) {
-        //. console.warn("Updated shader material time : " + shaderMaterial.uniforms.uTime.value)
         shaderMaterial.uniforms.uTime.value = elapsed;
         shaderMaterial.uniforms.uScrollProgress.value = progress;
         shaderMaterial.uniforms.uIntensity.value = 1.0 + progress * 2.0;
@@ -380,7 +385,15 @@ function animate() {
         camera.updateProjectionMatrix();
     }
 
-    camera.lookAt(props.cameraTarget);
+    // NEW: Interpolate camera target
+    currentCameraTarget.lerpVectors(
+        props.cameraTarget,
+        props.cameraTargetEnd,
+        progress
+    );
+
+    // Look at the interpolated target
+    camera.lookAt(currentCameraTarget);
 
     composer.render();
 }
