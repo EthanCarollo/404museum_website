@@ -2,3 +2,31 @@
 body {
     overflow-x: hidden;
 }
+
+@font-face {
+    font-family: 'museum';
+    src: url('./museum.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'droidsansmono';
+    src: url('./droidsansmono.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'droidsans';
+    src: url('./droidsans.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'depixel';
+    src: url('./depixel.ttf');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/image": "^1.10.0",
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@studio-freight/lenis": "^1.0.42",
     "@tresjs/cientos": "^4.1.0",

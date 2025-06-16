@@ -4,9 +4,9 @@
       class="fixed top-0 left-0 w-full h-full z-[-1] transition-colors duration-700 "
       :class="isBlackBgActive ? 'bg-black' : 'bg-transparent'"
   ></div>
-  <div class="h-[130vh]"></div>
+  <div class="h-[20vh]"></div>
 
-  <div class="relative bg-black text-white">
+  <div class="relative bg-black text-white transition-all duration-700" :class="isBlackBgActive ? 'opacity-100' : 'opacity-0'">
 
     <!-- Section Titre -->
     <section class="relative z-10 py-20 text-center">
