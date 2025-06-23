@@ -1,8 +1,22 @@
 {
   "baseline": "The Internet like you've never seen it before",
   "visit": "Visit the site",
+  "cards": {
+    "immersive": {
+      "title": "Immersive Experience",
+      "description": "Interactive 3D navigation through the history of the internet."
+    },
+    "archives": {
+      "title": "Living Archives",
+      "description": "Interactive collections of websites and mystical communities."
+    },
+    "culture": {
+      "title": "Preserved Culture",
+      "description": "Memes, trends, and cultural phenomena of the internet."
+    }
+  },
   "main": {
-    "title": "Try the experience",
+    "title": "Test the Experience",
     "description": {
       "part1": "The ",
       "museum": "404 Museum",
@@ -14,9 +28,10 @@
     "cta": {
       "download": "Download the app",
       "or": " or ",
-      "visit": "visit the website directly",
+      "visit": "visit the website directly online",
       "end": " to enjoy a unique experience."
     },
-    "button": "Download the app"
+    "button": "Download the App"
   }
 }
+

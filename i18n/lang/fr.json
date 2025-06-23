@@ -1,6 +1,20 @@
 {
   "baseline": "L'internet comme vous ne l'avez jamais visité",
   "visit": "Visiter le site",
+  "cards": {
+    "immersive": {
+      "title": "Expérience Immersive",
+      "description": "Navigation 3D intéractive dans l’histoire d’internet."
+    },
+    "archives": {
+      "title": "Archives vivantes",
+      "description": "Collections d’interfactives de sites et de communauté mystiques."
+    },
+    "culture": {
+      "title": "Culture préservée",
+      "description": "Mêmes, tendances et phénomènes culturels d’internet."
+    }
+  },
   "main": {
     "title": "Tester l'expérience",
     "description": {
@@ -20,3 +34,4 @@
     "button": "Télécharger l'application"
   }
 }
+

@@ -1,12 +1,12 @@
 <template>
-    <div class="max-w-sm">
+    <div class="max-w-md">
         <div class="relative bg-orange-50 rounded-2xl p-8 h-full flex flex-col items-start">
             <div class="absolute top-0 left-0 w-full h-full pointer-events-none border-[12px] border-[#9C713C] rounded-[2.4vh]"></div>
             <div class="absolute top-0 left-0 w-full h-full pointer-events-none border-[10px] border-[#E5A658] rounded-[2.4vh]"></div>
             <div class="absolute top-0 left-0 w-full h-full pointer-events-none border-[2px] border-[#9C713C] rounded-[2.4vh]"></div>
             <!-- Image/Icon Section -->
             <div class="flex justify-center mb-6">
-                <NuxtImg
+                <img
                     :src="imageUrl"
                     :alt="imageAlt"
                     class="w-20 h-20 shadow-lg rounded-xl"
@@ -14,9 +14,9 @@
             </div>
 
             <!-- Title Section -->
-            <h2 class="text-xl font-bold text-gray-900 text-center mb-4 leading-tight"
+            <h2 class="text-xl font-bold text-gray-900 text-start mb-4 leading-tight"
                 style="font-family: depixel;">
-                {{ titre }}
+                {{ title }}
             </h2>
 
             <!-- Description Section -->
@@ -39,7 +39,7 @@ const props = defineProps({
         type: String,
         default: 'Icône culturelle'
     },
-    titre: {
+    title: {
         type: String,
         default: 'Culture préservée'
     },
