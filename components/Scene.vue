@@ -90,7 +90,7 @@ const textureLoader = new THREE.TextureLoader();
 
 // Template de shader personnalisable
 const createShaderTemplate = () => {
-    const texture = textureLoader.load('props/museum-screen.png');
+    const texture = textureLoader.load('/props/museum-screen.png');
 
     // Optional: Configure texture properties
     texture.wrapS = THREE.RepeatWrapping;

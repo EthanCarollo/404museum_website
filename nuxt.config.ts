@@ -17,7 +17,23 @@ export default defineNuxtConfig({
     },
     pageTransition: { name: 'page', mode: 'out-in' }
   },
+  i18n: {
+    locales: [
+      { code: 'en', name: 'English', file: 'en.json' },
+      { code: 'fr', name: 'Français', file: 'fr.json' }
+    ],
+    defaultLocale: 'en',
+    lazy: true,
+    langDir: 'lang/',
+    strategy: 'prefix_except_default',
+  },
   css: ["./assets/css/main.css"],
-  modules: ['@nuxtjs/tailwindcss', '@tresjs/nuxt', 'nuxt-lucide-icons', '@nuxt/image'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@tresjs/nuxt',
+    'nuxt-lucide-icons',
+    '@nuxt/image',
+    '@nuxtjs/i18n'
+  ],
   plugins: ['~/plugins/lenis.client.ts']
 })

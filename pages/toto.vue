@@ -1,5 +1,6 @@
 <template>
     <div class="relative">
+        <!-- 3D Scene Background -->
         <div class="fixed top-0 h-[100lvh] overflow-y-hidden z-0">
             <Scene
                 mapPath="/3d/scenev2.glb"
@@ -23,54 +24,110 @@
                 class="w-full h-full canvas-container"
             />
         </div>
-    </div>
-    <div class="z-10">
-        <HeaderMuseum />
-    </div>
-    <div class="relative z-30 bg-[#E5A658] h-[6vh] w-screen shadow-lg">
 
-    </div>
-    <div class="relative bg-[#FCF7F1] min-h-screen w-screen z-20">
-        <div class="flex justify-center space-x-8 pt-24">
-            <CardInfo image-url="icon/camera-red.png" />
-            <CardInfo image-url="icon/archive-red.png" />
-            <CardInfo image-url="icon/museum-red.png" />
+        <!-- Header -->
+        <div class="z-10">
+            <HeaderMuseum />
         </div>
-        <div class="flex justify-center px-8 mt-32">
-            <div class="w-[30vw]">
 
+        <!-- Separator Bar -->
+        <div class="relative z-30 bg-[#E5A658] h-[6vh] w-screen shadow-lg"></div>
+
+        <!-- Main Content -->
+        <div class="relative bg-[#FCF7F1] min-h-screen w-screen z-20">
+            <!-- Info Cards Section -->
+            <div class="flex justify-center space-x-8 pt-24">
+                <CardInfo image-url="icon/camera-red.png" />
+                <CardInfo image-url="icon/archive-red.png" />
+                <CardInfo image-url="icon/museum-red.png" />
             </div>
-            <div class="w-[60vw] flex flex-col justify-center items-center space-y-6">
-                <div class="text-6xl w-full text-start" style="font-family: depixel;">
-                    Tester l’expérience
-                </div>
-                <div>
-                    <div class="text-2xl w-full text-start mt-4" style="font-family: droidsans;">
-                        Le <p class="" style="font-family: droidsansbold;">404 Museum</p> est une plateforme en ligne immersive qui vous permet d’explorer une <p style="font-family: droidsansbold;">multitude d’informations</p> sur la <p style="font-family: droidsansbold;">culture d’Internet</p>.
+
+            <!-- Main Content Section -->
+            <div class="flex justify-center px-8 mt-32">
+                <!-- Left Spacer -->
+                <div class="w-[30vw]"></div>
+
+                <!-- Content Area -->
+                <div class="w-[60vw] flex flex-col justify-center items-center space-y-6">
+                    <!-- Main Title -->
+                    <div class="text-6xl w-full text-start font-depixel">
+                        {{ $t('main.title') }}
                     </div>
-                    <div class="text-2xl mt-4 w-full text-start" style="font-family: droidsans;">
-                        <p style="font-family: droidsansbold;">Téléchargez l’application</p> ou <p style="font-family: droidsansbold;">visitez le site directement en ligne</p> pour vivre une expérience unique.
-                    </div>
-                </div>
-                <div class="flex w-full justify-center">
-                    <button class="relative rounded-[15.02px] shadow-[0px_6.007751941680908px_6.007751941680908px_0px_rgba(0,0,0,0.25)] mt-8">
-                        <div class="flex justify-center items-center
-                            bg-[#b43325] rounded-[15.02px] shadow-[0px_3.9018709659576416px_3.9018709659576416px_0px_rgba(0,0,0,0.25)] border-[1.50px] border-[#5e1b13]">
-                            <div class="text-white text-3xl px-8 py-8 pt-10" style="font-family: depixel">
-                                Télécharger l’application
-                            </div>
+
+                    <!-- Description Text -->
+                    <div class="space-y-4">
+                        <div class="text-2xl w-full text-start font-droidsans">
+                            {{ $t('main.description.part1') }}
+                            <span class="font-droidsansbold">{{ $t('main.description.museum') }}</span>
+                            {{ $t('main.description.part2') }}
+                            <span class="font-droidsansbold">{{ $t('main.description.infos') }}</span>
+                            {{ $t('main.description.part3') }}
+                            <span class="font-droidsansbold">{{ $t('main.description.internet') }}</span>.
                         </div>
-                    </button>
+
+                        <div class="text-2xl w-full text-start font-droidsans">
+                            <span class="font-droidsansbold">{{ $t('main.cta.download') }}</span>
+                            {{ $t('main.cta.or') }}
+                            <span class="font-droidsansbold">{{ $t('main.cta.visit') }}</span>
+                            {{ $t('main.cta.end') }}
+                        </div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <div class="flex w-full justify-center">
+                        <button class="relative rounded-[15.02px] shadow-[0px_6.007751941680908px_6.007751941680908px_0px_rgba(0,0,0,0.25)] mt-8 transition-transform hover:bg-[#ab3326]">
+                            <div class="flex justify-center items-center bg-[#b43325] rounded-[15.02px] shadow-[0px_3.9018709659576416px_3.9018709659576416px_0px_rgba(0,0,0,0.25)] border-[1.50px] border-[#5e1b13]">
+                                <div class="text-white text-3xl px-8 py-8 pt-10 font-depixel">
+                                    {{ $t('main.button') }}
+                                </div>
+                            </div>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="w-full flex justify-center items-center pt-16 pb-4">
-            <div class="" style="font-family: depixel">@404 Museum</div>
+
+            <!-- Footer -->
+            <div class="w-full flex justify-center items-center pt-16 pb-4">
+                <div class="font-depixel text-gray-600">
+                    @404 Museum
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
-<script setup>
 
+<script setup>
 import * as THREE from "three";
+
+// Props ou méthodes si nécessaire
+const loadingProgress = (progress) => {
+  // Gérer le progrès de chargement
+  console.log('Loading progress:', progress);
+};
 </script>
+
+<style scoped>
+/* Définition des polices personnalisées */
+.font-depixel {
+  font-family: 'depixel', sans-serif;
+}
+
+.font-droidsans {
+  font-family: 'droidsans', sans-serif;
+}
+
+.font-droidsansbold {
+  font-family: 'droidsansbold', sans-serif;
+}
+
+/* Styles pour le canvas */
+.canvas-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Animation pour le bouton */
+button:active {
+  transform: translateY(2px);
+}
+</style>

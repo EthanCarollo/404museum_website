@@ -1,0 +1,22 @@
+{
+  "baseline": "L'internet comme vous ne l'avez jamais visité",
+  "visit": "Visiter le site",
+  "main": {
+    "title": "Tester l'expérience",
+    "description": {
+      "part1": "Le ",
+      "museum": "404 Museum",
+      "part2": " est une plateforme en ligne immersive qui vous permet d'explorer une ",
+      "infos": "multitude d'informations",
+      "part3": " sur la ",
+      "internet": "culture d'Internet"
+    },
+    "cta": {
+      "download": "Téléchargez l'application",
+      "or": " ou ",
+      "visit": "visitez le site directement en ligne",
+      "end": " pour vivre une expérience unique."
+    },
+    "button": "Télécharger l'application"
+  }
+}

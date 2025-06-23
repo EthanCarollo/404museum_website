@@ -1,0 +1,22 @@
+{
+  "baseline": "The Internet like you've never seen it before",
+  "visit": "Visit the site",
+  "main": {
+    "title": "Try the experience",
+    "description": {
+      "part1": "The ",
+      "museum": "404 Museum",
+      "part2": " is an immersive online platform that allows you to explore a ",
+      "infos": "wealth of information",
+      "part3": " about ",
+      "internet": "Internet culture"
+    },
+    "cta": {
+      "download": "Download the app",
+      "or": " or ",
+      "visit": "visit the website directly",
+      "end": " to enjoy a unique experience."
+    },
+    "button": "Download the app"
+  }
+}
